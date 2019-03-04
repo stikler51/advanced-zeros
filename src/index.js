@@ -1,57 +1,58 @@
-// module.exports = function getZerosCount(number, base) {
-//   // your implementation
-//
-//
-//
-//     return numberOfZeros;
-//
-// }
+module.exports = function getZerosCount(number, base) {
 
-let number = 130;
-let base = 116;
-//number = number.toString(16);
-console.log(number);
-let simpleFactors = [];
-let powers = [];
-makeSimpleFactors(base);
-console.log(simpleFactors);
+    let numberOfZeros = 0;
+    let simpleFactors = [];
+    let powers = [];
+    let numberOfEntries = [];
+    makeSimpleFactors(base);
 
-console.log(powers.reverse());
+    for (let i = 0; i < simpleFactors.length; i++) {
 
+        for (let n = 1; number > Math.pow(simpleFactors[i], n); n++) {
+            numberOfZeros += Math.floor(number / Math.pow(simpleFactors[i], n));
+        }
 
+        numberOfEntries.push(Math.floor(numberOfZeros / powers[i]));
+        numberOfZeros = 0;
+    }
 
-function makeSimpleFactors (base) {
-    let devider = 2;
-    let basis = base;
-    let power = 1;
-
-    while (basis > 1) {
-
-        if ( basis % devider == 0) {
-            basis = basis / devider;
-            if (simpleFactors.indexOf(devider) >= 0) {
-                power++;
-            } else {
-                simpleFactors.push(devider);
-            }
+    let min = numberOfEntries[0];
+    for (let i = 0; i < numberOfEntries.length; i++) {
+        if (min >= numberOfEntries[i]) {
+            min = numberOfEntries[i];
         } else {
-            power = 1;
-            devider++;
+            continue;
         }
     }
-}
 
+    return min;
 
+    function makeSimpleFactors (base) {
+        let devider = 2;
+        let basis = base;
 
-// let numberOfZeros = 0;
-// for (let n = 1; number > Math.pow(5, n); n++) {
-//     numberOfZeros += Math.floor(number / Math.pow(5, n));
-// }
-// console.log(numberOfZeros)
+        while (basis > 1) {
 
-// let a = 1000;
-//
-// console.log(a.toString(16));
+            if ( basis % devider == 0) {
+                basis = basis / devider;
+                simpleFactors.push(devider);
+            } else {
+                devider++;
+            }
+        }
 
-//http://www.cyberforum.ru/cpp-beginners/thread622004.html
-//https://tehnoshell.ru/news/itkpi/marsianskie-faktorialyi/
+        for (let i = 0; i < simpleFactors.length; i++) {
+            for (let j = 0; j < simpleFactors.length; j++) {
+                if (i == j) {
+                    powers[i] = 1;
+                    continue;
+                }
+                if (simpleFactors[i] == simpleFactors[j]){
+                    powers[i]++;
+                    simpleFactors.splice(j, 1);
+                    j--;
+                }
+            }
+        }
+    }
+};
